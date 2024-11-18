@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Проверка кода</title>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="icon" href="{% static 'main/img/free-icon-coding-1290020.png' %}" type="image/x-icon">
+  </head>
+  <body>
+    <main>
+        {% block 'main' %}
+        {% endblock %}
+    </main>
+  </body>
+</html>
