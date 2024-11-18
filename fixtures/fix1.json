@@ -79,5 +79,23 @@
             "groups": [],
             "user_permissions": []
         }
+    },
+    {
+        "model": "main.coder",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "fio": "Иванов Иван Иванович"
+        }
+    },
+    {
+        "model": "main.task",
+        "pk": 1,
+        "fields":{
+            "published_by": 1,
+            "description": "Написать программу с выводом хелоу ворлд",
+            "name": "Написание программы \"Hello world!\" ",
+            "source_code": "print('Hello world!')"
+        }
     }
   ]
