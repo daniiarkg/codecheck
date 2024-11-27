@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
 {% block 'main' %}
-<h2>Hello, World!</h2>
+<a class="choice" href="{% url 'admin:index' %}">ВХОД</a>
+<a class="choice" href="{% url 'registration' %}">РЕГИСТРАЦИЯ</a>
 {% endblock %}

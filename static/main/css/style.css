@@ -1,3 +1,30 @@
-main{
-    color: red;
+html{
+    font-family: sans-serif;
+    line-height: 3em;
+    font-size: 15px;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+}
+
+form{
+    padding: 20px;
+    background-color: lightgrey;
+}
+
+h2{
+    text-align: center;
+}
+
+
+
+
+a{
+    margin: 100px;
+    padding: 20px;
+    background-color: black;
+    color: white;
+    text-decoration: none;
 }

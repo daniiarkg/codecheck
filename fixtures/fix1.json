@@ -81,6 +81,13 @@
         }
     },
     {
+        "model": "auth.group",
+        "pk": 1,
+        "fields": {
+            "name": "Обычный"
+        }
+    },
+    {
         "model": "main.coder",
         "pk": 1,
         "fields": {

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block 'main' %}
+<form action="" method="post">
+    <h2>Регистрация</h2>
+
+      {% csrf_token %}
+      {{form}}
+    <input type="submit" data-wait="Please wait..." class="ms-button ms-is-form w-button" value="Submit">
+</form>
+{% endblock %}
