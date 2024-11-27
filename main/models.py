@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 class Coder(models.Model):
+
+    def __str__(self) -> str:
+        return f'{self.fio} | {self.user.username}'
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     fio = models.CharField(verbose_name='ФИО', max_length=200, null=True)
 
@@ -17,7 +21,11 @@ class Task(models.Model):
 
 
 class TaskComplete(models.Model):
-    coder = models.ForeignKey(Coder, on_delete=models.CASCADE)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    # def __save__(self):
+
+
+    solved_by = models.ForeignKey(Coder, on_delete=models.CASCADE, null=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=False)
     code = models.TextField(verbose_name='Код решения', null=True)
-    date = models.DateTimeField(verbose_name='Решено', default=timezone.now)
+    date = models.DateTimeField(verbose_name='Дата', default=timezone.now)

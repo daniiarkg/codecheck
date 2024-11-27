@@ -3,13 +3,49 @@ from .models import *
 from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+
 # Register your models here.
+
+def check_code(ecode,scode):
+    codebase_upper = '''
+vars = [1,2,3]
+'''
+
+    codebase_lower = '''
+for i in vars:
+    if etalon(i)!=solution(i):
+        raise Exception('Uncorrect!')
+'''
+    try:
+        exec(codebase_upper + '\n' + ecode + '\n' + scode + '\n' + codebase_lower, {}, {})
+    except:
+        return False
+    return True
+    
 
 class TaskCompleteInline(admin.StackedInline):
     model = TaskComplete
     extra = 0
     verbose_name = 'Решенное задание'
     verbose_name_plural = 'Решенные задания'
+
+    exclude = ['solved_by', 'task', 'date']
+    readonly_fields = ['solve_out','lnk_out', 'date_out']
+        
+    @admin.display(description='Дата решения')
+    def date_out(self,obj):
+        return format_html(f'{obj.date.strftime("%c")}')
+    
+    @admin.display(description='Решено')
+    def solve_out(self,obj):
+        return format_html(f'<a href="/admin/main/coder/{obj.solved_by.id}">{obj.solved_by.fio}</a>')
+    
+    @admin.display(description='Ссылка на задание')
+    def lnk_out(self,obj):
+        return format_html(f'<a href="/admin/main/task/{obj.task.id}">Нажмите здесь</a>')
+
 
 class CoderInline(admin.StackedInline):
     model = Coder
@@ -24,7 +60,11 @@ class TaskInline(admin.StackedInline):
     verbose_name_plural = 'Опубликованные задания'
 
     exclude = ['date',]
-    readonly_fields = ['date_out',]
+    readonly_fields = ['date_out','link_out']
+
+    @admin.display(description='Ссылка для просмотра')
+    def link_out(self,obj):
+        return format_html(f'<a href="/admin/main/task/{obj.id}">Нажмите здесь</a>')
 
     @admin.display(description='Опубликовано')
     def date_out(self,obj):
@@ -35,7 +75,28 @@ class UserAdmin(BaseUserAdmin):
 
 class CoderAdmin(admin.ModelAdmin):
     list_display = ['fio','id']
+    exclude = ['user',]
     inlines = [TaskInline, TaskCompleteInline]
+    readonly_fields = ['user_out',]
+
+    def save_formset(self, request, obj, formset, change):
+        instances = formset.save(commit=False)
+
+        if formset.model==TaskComplete:
+            
+            for instance in instances:
+                print(instance.code)
+                print(request.user.username)
+                if not instance.task:
+                    raise ValidationError('No task given!')
+                instance.save()
+                formset.save_m2m()
+
+        formset.save()
+
+    @admin.display(description='Юзернейм')
+    def user_out(self,obj):
+        return format_html(obj.user.username)
 
 
 class TaskAdmin(admin.ModelAdmin):
@@ -43,6 +104,21 @@ class TaskAdmin(admin.ModelAdmin):
     exclude = ['date','published_by']
     readonly_fields = ['date_out','pub_out']
     inlines = [TaskCompleteInline,]
+
+    def save_formset(self, request, obj, formset, change):
+        instances = formset.save(commit=False)
+
+        if formset.model==TaskComplete:
+            
+            for instance in instances:
+                if not check_code(instance.code, instance.task.source_code):
+                    messages.error(request,'TASK COMPLETE INCORRECT!')
+                    return
+                instance.solved_by = request.user.coder
+                instance.save()
+                formset.save_m2m()
+
+        formset.save()
 
     def save_model(self, request, obj, form, change):
         try:    
@@ -53,7 +129,7 @@ class TaskAdmin(admin.ModelAdmin):
 
     @admin.display(description='Автор')
     def pub_out(self,obj):
-        return format_html(f'<a href=/admin/main/coder/{obj.published_by.id}>{obj.published_by.fio}</a>')
+        return format_html(f'<a href="/admin/main/coder/{obj.published_by.id}">{obj.published_by.fio}</a>')
 
     @admin.display(description='Опубликовано')
     def date_out(self,obj):
