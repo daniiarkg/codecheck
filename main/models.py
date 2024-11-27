@@ -25,7 +25,7 @@ class TaskComplete(models.Model):
     # def __save__(self):
 
 
-    solved_by = models.ForeignKey(Coder, on_delete=models.CASCADE, null=True)
+    solved_by = models.ForeignKey(Coder, on_delete=models.CASCADE, null=True, blank=True)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=False)
     code = models.TextField(verbose_name='Код решения', null=True)
     date = models.DateTimeField(verbose_name='Дата', default=timezone.now)

@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block 'main' %}
-<a class="choice" href="{% url 'admin:index' %}">ВХОД</a>
-<a class="choice" href="{% url 'registration' %}">РЕГИСТРАЦИЯ</a>
+<div class="grid-container">
+    <h2>ПРОВЕРКА КОДА</h2>
+    <div class="grid-item"><a class="choice" href="{% url 'admin:index' %}">ВХОД</a></div>
+    <div class="grid-item"><a class="choice" href="{% url 'registration' %}">РЕГИСТРАЦИЯ</a></div>
+    <div class="grid-item"><a class="instr" 
+        href="https://docs.google.com/document/d/e/2PACX-1vT5sDdonwCVqhI5h8bX-sojDw_UfS0TispBJVypwJGoVMfR7TWDvuZMfQQJ1aKg-3REB4qmEfr8b6Ri/pub">
+        ИНСТРУКЦИЯ</a></div>
+</div>
 {% endblock %}

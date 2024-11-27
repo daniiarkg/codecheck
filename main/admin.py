@@ -30,9 +30,10 @@ class TaskCompleteInline(admin.StackedInline):
     extra = 0
     verbose_name = 'Решенное задание'
     verbose_name_plural = 'Решенные задания'
+    
 
-    exclude = ['solved_by', 'task', 'date']
-    readonly_fields = ['solve_out','lnk_out', 'date_out']
+    fields = ['code','task','solve_out','date_out']
+    readonly_fields = ['lnk_out','solve_out','date_out']
         
     @admin.display(description='Дата решения')
     def date_out(self,obj):
@@ -104,6 +105,7 @@ class TaskAdmin(admin.ModelAdmin):
     exclude = ['date','published_by']
     readonly_fields = ['date_out','pub_out']
     inlines = [TaskCompleteInline,]
+
 
     def save_formset(self, request, obj, formset, change):
         instances = formset.save(commit=False)
